@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">GeoSlacker</string>
+
+    <string name="permission_denied">The location permission access is Denied.</string>
+    <string name="permission_rationale">If you would like to use this app, please grant the location permission.</string>
+    <string name="permission_never_ask_again">The location permission access is never asked again.</string>
+    <string name="permission_allow">Allow</string>
+    <string name="permission_deny">Deny</string>
+
+    <string name="slack_settings">Slack settings</string>
+    <string name="legacy_access_token">Legacy access token</string>
+    <string name="channel_id">Channel ID</string>
+    <string name="command">Command</string>
+    <string name="geofencing_settings">Geofencing settings</string>
+    <string name="central_point">Central point</string>
+    <string name="get_location">Get location</string>
+    <string name="save">Save</string>
+    <string name="initialize">Initialize</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+</resources>
