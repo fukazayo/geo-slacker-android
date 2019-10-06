@@ -21,6 +21,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) packageInfo.longVersionCode else packageInfo.versionCode.toLong()
+        val versionName = "${packageInfo.versionName} (${versionCode})"
+        title = "$title $versionName"
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             addNotificationChannel()
         }

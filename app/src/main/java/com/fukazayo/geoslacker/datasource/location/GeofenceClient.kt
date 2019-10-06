@@ -23,20 +23,16 @@ class GeofenceClient(context: Context) {
 
     private fun addGeofence(latitude: Double, longitude: Double, radius: Float) =
         Completable.create { emitter ->
-            val builder = Geofence.Builder()
-            builder.apply {
-                setRequestId("geofence")
-                setCircularRegion(latitude, longitude, radius)
-                setExpirationDuration(Geofence.NEVER_EXPIRE)
-                setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
-            }
-
-            val geofences = ArrayList<Geofence>()
-            geofences.add(builder.build())
+            val geofence = Geofence.Builder()
+                .setRequestId("geofence")
+                .setCircularRegion(latitude, longitude, radius)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build()
 
             val request = GeofencingRequest.Builder()
-                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                .addGeofences(geofences)
+                .setInitialTrigger(0)
+                .addGeofence(geofence)
                 .build()
 
             geofencingClient.addGeofences(request, pendingIntent)?.run {
