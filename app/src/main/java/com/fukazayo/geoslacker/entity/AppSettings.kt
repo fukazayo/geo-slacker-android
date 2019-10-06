@@ -8,5 +8,7 @@ data class AppSettings(
     val slackCommand: String,
     val geoLatitude: Double,
     val geoLongitude: Double,
+    val geoRadius: Float,
+    val isStarted: Boolean,
     val lastPostChatCommandDate: Date?
 )

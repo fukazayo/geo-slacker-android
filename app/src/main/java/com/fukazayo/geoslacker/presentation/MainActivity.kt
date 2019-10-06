@@ -1,11 +1,18 @@
 package com.fukazayo.geoslacker.presentation
 
 import android.Manifest
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.fukazayo.geoslacker.R
+import com.fukazayo.geoslacker.common.Constants
 import permissions.dispatcher.*
 
 @RuntimePermissions
@@ -13,10 +20,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
-                .commitNow()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            addNotificationChannel()
         }
 
         grantedWithPermissionCheck()
@@ -30,7 +36,9 @@ class MainActivity : AppCompatActivity() {
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     fun granted() {
-        // Nothing to do.
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, MainFragment.newInstance())
+            .commitNow()
     }
 
     @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -57,5 +65,21 @@ class MainActivity : AppCompatActivity() {
             .setCancelable(false)
             .setMessage(messageResId)
             .show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun addNotificationChannel() {
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val channel = NotificationChannel(
+            Constants.NOTIFICATION_CHANNEL_ID,
+            "Notification",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
+        channel.enableLights(true)
+        channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+
+        manager.createNotificationChannel(channel)
     }
 }

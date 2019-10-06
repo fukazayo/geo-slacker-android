@@ -1,4 +1,4 @@
-package com.fukazayo.geoslacker.datastore.location
+package com.fukazayo.geoslacker.datasource.location
 
 import android.content.Context
 import android.location.Address

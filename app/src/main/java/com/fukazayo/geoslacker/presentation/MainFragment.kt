@@ -32,16 +32,20 @@ class MainFragment : Fragment() {
 
         viewModel.context = context ?: return
 
+        viewModel.startedEvent.subscribe({
+            setAppSettingsLayout(false)
+            startButton.isEnabled = false
+            stopButton.isEnabled = true
+        }, {})
+
+        viewModel.stoppedEvent.subscribe({
+            setAppSettingsLayout(true)
+            startButton.isEnabled = true
+            stopButton.isEnabled = false
+        }, {})
+
         getLocationButton.setOnClickListener {
             viewModel.getCurrentLocation()
-        }
-
-        saveButton.setOnClickListener {
-            viewModel.save()
-        }
-
-        initializeButton.setOnClickListener {
-            viewModel.initialize()
         }
 
         startButton.setOnClickListener {
@@ -53,5 +57,12 @@ class MainFragment : Fragment() {
         }
 
         viewModel.load()
+    }
+
+    private fun setAppSettingsLayout(isEnabled: Boolean) {
+        for (cnt in 0 until appSettingsLayout.childCount) {
+            val view = appSettingsLayout.getChildAt(cnt)
+            view.isEnabled = isEnabled
+        }
     }
 }

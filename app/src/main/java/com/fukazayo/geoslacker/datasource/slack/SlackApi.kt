@@ -1,4 +1,4 @@
-package com.fukazayo.geoslacker.datastore.slack
+package com.fukazayo.geoslacker.datasource.slack
 
 import io.reactivex.Single
 import retrofit2.Response

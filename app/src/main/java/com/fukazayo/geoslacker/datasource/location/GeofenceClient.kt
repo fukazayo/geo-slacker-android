@@ -1,4 +1,4 @@
-package com.fukazayo.geoslacker.datastore.location
+package com.fukazayo.geoslacker.datasource.location
 
 import android.app.PendingIntent
 import android.content.Context
@@ -13,12 +13,16 @@ class GeofenceClient(context: Context) {
     private val pendingIntent: PendingIntent
 
     init {
-        val intent = Intent(context, GeofenceTransitionsIntentService::class.java)
-        pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val intent = Intent(context, GeofenceBroadcastReceiver::class.java)
+        pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    fun addGeofence(latitude: Double, longitude: Double, radius: Float): Completable {
-        return Completable.create { emitter ->
+    fun syncGeofence(latitude: Double, longitude: Double, radius: Float, isStarted: Boolean) =
+        removeGeofence()
+            .andThen(if (isStarted) addGeofence(latitude, longitude, radius) else Completable.complete())
+
+    private fun addGeofence(latitude: Double, longitude: Double, radius: Float) =
+        Completable.create { emitter ->
             val builder = Geofence.Builder()
             builder.apply {
                 setRequestId("geofence")
@@ -31,6 +35,7 @@ class GeofenceClient(context: Context) {
             geofences.add(builder.build())
 
             val request = GeofencingRequest.Builder()
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
                 .addGeofences(geofences)
                 .build()
 
@@ -43,10 +48,9 @@ class GeofenceClient(context: Context) {
                 }
             }
         }
-    }
 
-    fun removeGeofencing(): Completable {
-        return Completable.create { emitter ->
+    private fun removeGeofence() =
+        Completable.create { emitter ->
             geofencingClient.removeGeofences(pendingIntent)
                 .addOnSuccessListener {
                     emitter.onComplete()
@@ -55,5 +59,4 @@ class GeofenceClient(context: Context) {
                     emitter.onError(it)
                 }
         }
-    }
 }

@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".datastore.location.GeofenceTransitionsIntentService" />
+        <receiver android:name=".datasource.location.GeofenceBroadcastReceiver" />
 
     </application>
 

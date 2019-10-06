@@ -1,4 +1,4 @@
-package com.fukazayo.geoslacker.datastore.slack
+package com.fukazayo.geoslacker.datasource.slack
 
 import com.fukazayo.geoslacker.BuildConfig
 import com.fukazayo.geoslacker.common.Constants

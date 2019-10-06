@@ -14,6 +14,7 @@
     <string name="geofencing_settings">Geofencing settings</string>
     <string name="central_point">Central point</string>
     <string name="get_location">Get location</string>
+    <string name="radius">Radius (m)</string>
     <string name="save">Save</string>
     <string name="initialize">Initialize</string>
     <string name="start">Start</string>
