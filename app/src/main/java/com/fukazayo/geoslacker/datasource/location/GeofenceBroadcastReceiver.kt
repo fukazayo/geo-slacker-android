@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import com.fukazayo.geoslacker.common.Logger
 import com.fukazayo.geoslacker.datasource.notification.NotificationClient
 import com.fukazayo.geoslacker.datasource.preference.PreferenceClient
 import com.fukazayo.geoslacker.datasource.slack.SlackClient
@@ -23,11 +23,11 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         context?.let {
             when (geofencingEvent.geofenceTransition) {
                 Geofence.GEOFENCE_TRANSITION_ENTER -> {
-                    Log.d("GeofenceService", "enter")
+                    Logger.d("GeofenceBroadcastReceiver: ENTER")
                     postSlack(it, true)
                 }
                 Geofence.GEOFENCE_TRANSITION_EXIT -> {
-                    Log.d("GeofenceService", "exit")
+                    Logger.d("GeofenceBroadcastReceiver: EXIT")
                     postSlack(it, false)
                 }
             }
@@ -43,19 +43,26 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                     command = it.slackCommand,
                     token = it.slackToken
                 )
+                .retry(10)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ _ ->
+                    val message = "Posted \"${it.slackCommand}\" to \"${it.slackChannel}\" channel."
+                    Logger.i(message)
+
                     NotificationClient.sendNotification(
                         context,
                         "${if (isEntered) "Entered" else "Exited"} the region",
-                        "Posted \"${it.slackCommand}\" to \"${it.slackChannel}\" channel."
+                        message
                     )
-                }, { _ ->
+                }, { error ->
+                    val message = "Failed to post \"${it.slackCommand}\" to \"${it.slackChannel}\" channel."
+                    Logger.e(message, error)
+
                     NotificationClient.sendNotification(
                         context,
                         "${if (isEntered) "Entered" else "Exited"} the region",
-                        "Failed to post \"${it.slackCommand}\" to \"${it.slackChannel}\" channel."
+                        message
                     )
                 })
         }
